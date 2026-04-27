@@ -193,6 +193,27 @@ iframe{
 .gallery img:hover{
   transform:scale(1.05);
 }
+
+.date-info{
+  font-family:'Playfair Display', serif;
+  color:#fff;
+  text-shadow:0 2px 4px rgba(0,0,0,0.3);
+  margin:15px 0 25px;
+  padding:15px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(5px);
+  border-radius:15px;
+  display:inline-block;
+  min-width:280px;
+}
+
+#countdown{
+  font-size:18px;
+  font-weight:500;
+  color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,0.3);
+  letter-spacing:1px;
+}
 </style>
 </head>
 
@@ -291,6 +312,7 @@ Inilah kisah kami—sederhana, penuh warna, dan nyata.
 <!-- COUNTDOWN -->
 <div class="section">
   <div class="title">Menuju Hari Bahagia</div>
+  <div id="weddingDate" class="date-info"></div>
   <div id="countdown"></div>
 </div>
 
@@ -300,8 +322,14 @@ Inilah kisah kami—sederhana, penuh warna, dan nyata.
 <div class="section">
   <div class="title">Lokasi</div>
   <p>ds.tangkis kecamatan guntur.kabupaten demak, jln kaumat barat Rt03/Rw02 </p>
-  <iframe src="https://maps.app.goo.gl/EibtAb2Yyp1E8gJN9" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-  <br><br>
+<iframe
+  width="100%"
+  height="450"
+  style="border:0"
+  loading="lazy"
+  allowfullscreen
+  src="https://www.google.com/maps?q=-6.9661593681934155,110.56833272732977&hl=id&z=17&output=embed">
+</iframe>  <br><br>
   <button onclick="bukaRute()">🚗 Rute Lokasi</button>
 </div>
 
@@ -385,7 +413,22 @@ function bukaUndangan(){
   document.getElementById("musik").play();
 }
 
+const hariList = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+const bulanList = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+
 let target = new Date("Juni 13, 2026 09:00:00").getTime();
+let targetObj = new Date("Juni 13, 2026 09:00:00");
+
+let hariName = hariList[targetObj.getDay()];
+let tanggalNum = targetObj.getDate();
+let bulanName = bulanList[targetObj.getMonth()];
+let tahunNum = targetObj.getFullYear();
+let jamNum = targetObj.getHours().toString().padStart(2,'0');
+let menitNum = targetObj.getMinutes().toString().padStart(2,'0');
+
+document.getElementById("weddingDate").innerHTML = 
+  `<div style="font-size:24px; font-weight:bold; margin-bottom:5px; letter-spacing:1px;">${hariName}, ${tanggalNum} ${bulanName} ${tahunNum}</div>`+
+  `<div style="font-size:16px; font-weight:300; opacity:0.95;">Pukul ${jamNum}:${menitNum} WIB</div>`;
 setInterval(()=>{
   let now = new Date().getTime();
   let diff = target - now;
@@ -535,7 +578,7 @@ function bukaRute(){
   navigator.geolocation.getCurrentPosition(pos=>{
     let lat=pos.coords.latitude;
     let lng=pos.coords.longitude;
-    window.open(`https://www.google.com/maps/dir/${lat},${lng}/${tujuanLat},${tujuanLng}`);
+    window.open(`https://www.google.com/maps?q=-6.9661593681934155,110.56833272732977&hl=id&z=17&output=embed`);
   });
 }
 
