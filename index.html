@@ -207,12 +207,37 @@ iframe{
   min-width:280px;
 }
 
-#countdown{
+#countdown, .countdown-timer{
   font-size:18px;
   font-weight:500;
   color:#fff;
   text-shadow:0 1px 3px rgba(0,0,0,0.3);
   letter-spacing:1px;
+}
+
+.event-wrapper{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:30px;
+  margin-top:20px;
+}
+
+.event-box{
+  background:rgba(255,255,255,0.12);
+  backdrop-filter:blur(8px);
+  border-radius:20px;
+  padding:30px 20px;
+  width:300px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+.event-title{
+  font-family:'Playfair Display', serif;
+  font-size:24px;
+  color:#fff;
+  margin-bottom:10px;
+  text-shadow:0 2px 4px rgba(0,0,0,0.3);
 }
 </style>
 </head>
@@ -312,8 +337,20 @@ Inilah kisah kami—sederhana, penuh warna, dan nyata.
 <!-- COUNTDOWN -->
 <div class="section">
   <div class="title">Menuju Hari Bahagia</div>
-  <div id="weddingDate" class="date-info"></div>
-  <div id="countdown"></div>
+  <div class="event-wrapper">
+    <!-- AKAD -->
+    <div class="event-box">
+      <div class="event-title">Akad Nikah</div>
+      <div id="akadDate" class="date-info"></div>
+      <div id="countdownAkad" class="countdown-timer"></div>
+    </div>
+    <!-- RESEPSI -->
+    <div class="event-box">
+      <div class="event-title">Resepsi</div>
+      <div id="resepsiDate" class="date-info"></div>
+      <div id="countdownResepsi" class="countdown-timer"></div>
+    </div>
+  </div>
 </div>
 
 
@@ -321,7 +358,7 @@ Inilah kisah kami—sederhana, penuh warna, dan nyata.
 <!-- LOKASI -->
 <div class="section">
   <div class="title">Lokasi</div>
-  <p>ds.tangkis kecamatan guntur.kabupaten demak, jln kaumat barat Rt03/Rw02 </p>
+  <p>Jalan kauman barat Rt03/Rt02 desa tangkis kec. guntur kab. demak </p>
 <iframe
   width="100%"
   height="450"
@@ -376,13 +413,16 @@ Inilah kisah kami—sederhana, penuh warna, dan nyata.
 <!-- AMPLIP DIGITAL -->
 <div class="section">
   <div class="title">Weeding Gift</div>
-  <p>Kepada Yth. Tamu Undangan yang berkenan memberikan <br>
-  <strong>souvenir uang tunai</strong> untuk keberkahan rumah tangga kami</p>
+  <p>Doa restu anda merupakan karunia yang sangat berarti bagi kami dan jika memeberi adalah ungkapan tanda kasih anda<p>
+  </p> anda dapat memberi kado secara<br>
+  <strong>CHASLESS</strong>. Anda juga bisa mengirim kado fisik kelamat berikut :<p>
+
+  </p> <strong>desa tangkis RT03/RW02, kecamatan guntur kabupaten demak</strong></p>
   
   <div style="background:white; padding:20px; border-radius:20px; margin:20px auto; max-width:300px; box-shadow:0 10px 30px rgba(255,255,255,0.2);">
     <h3 style="color:#b68d40; margin:0;">Bank BCA</h3>
-    <p style="font-size:18px; margin:10px 0;"><strong>WAHYU ARI WIBOWO</strong></p>
-    <p style="font-size:24px; font-weight:bold; color:#333;">0312772645</p>
+    <p style="font-size:18px; margin:10px 0;"><strong>LU'LUUL KHASANAH</strong></p>
+    <p style="font-size:24px; font-weight:bold; color:#333;">840012638720</p>
   </div>
   
   <button onclick="copyRekening()" style="background:#4CAF50;color:white;padding:8px 16px;border:none;border-radius:20px;cursor:pointer;margin:10px;font-size:14px;">📋 Salin No Rekening</button>
@@ -443,37 +483,50 @@ function bukaUndangan(){
 const hariList = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
 const bulanList = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
 
-let target = new Date("Juni 13, 2026 09:00:00").getTime();
-let targetObj = new Date("Juni 13, 2026 09:00:00");
+function formatTanggalWaktu(dateObj){
+  let hariName = hariList[dateObj.getDay()];
+  let tanggalNum = dateObj.getDate();
+  let bulanName = bulanList[dateObj.getMonth()];
+  let tahunNum = dateObj.getFullYear();
+  let jamNum = dateObj.getHours().toString().padStart(2,'0');
+  let menitNum = dateObj.getMinutes().toString().padStart(2,'0');
+  return {
+    tanggal: `${hariName}, ${tanggalNum} ${bulanName} ${tahunNum}`,
+    waktu: `Pukul ${jamNum}:${menitNum} WIB`
+  };
+}
 
-let hariName = hariList[targetObj.getDay()];
-let tanggalNum = targetObj.getDate();
-let bulanName = bulanList[targetObj.getMonth()];
-let tahunNum = targetObj.getFullYear();
-let jamNum = targetObj.getHours().toString().padStart(2,'0');
-let menitNum = targetObj.getMinutes().toString().padStart(2,'0');
+function startCountdown(targetDateStr, dateElId, timerElId){
+  let targetObj = new Date(targetDateStr);
+  let target = targetObj.getTime();
+  let fmt = formatTanggalWaktu(targetObj);
 
-document.getElementById("weddingDate").innerHTML = 
-  `<div style="font-size:24px; font-weight:bold; margin-bottom:5px; letter-spacing:1px;">${hariName}, ${tanggalNum} ${bulanName} ${tahunNum}</div>`+
-  `<div style="font-size:16px; font-weight:300; opacity:0.95;">Pukul ${jamNum}:${menitNum} WIB</div>`;
-setInterval(()=>{
-  let now = new Date().getTime();
-  let diff = target - now;
+  document.getElementById(dateElId).innerHTML =
+    `<div style="font-size:22px; font-weight:bold; margin-bottom:5px; letter-spacing:1px;">${fmt.tanggal}</div>`+
+    `<div style="font-size:16px; font-weight:300; opacity:0.95;">${fmt.waktu}</div>`;
 
-  if(diff <= 0){
-    document.getElementById("countdown").innerHTML = "Acara Dimulai!";
-    return;
-  }
+  setInterval(()=>{
+    let now = new Date().getTime();
+    let diff = target - now;
 
-  let bulan = Math.floor(diff / (1000*60*60*24*30));
-  let hari = Math.floor((diff % (1000*60*60*24*30)) / (1000*60*60*24));
-  let jam = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-  let menit = Math.floor((diff % (1000*60*60)) / (1000*60));
-  let detik = Math.floor((diff % (1000*60)) / 1000);
+    if(diff <= 0){
+      document.getElementById(timerElId).innerHTML = "Acara Dimulai!";
+      return;
+    }
 
-  document.getElementById("countdown").innerHTML =
-    `${bulan} Bulan ${hari} Hari ${jam} Jam ${menit} Menit ${detik} Detik`;
-},1000);
+    let bulan = Math.floor(diff / (1000*60*60*24*30));
+    let hari = Math.floor((diff % (1000*60*60*24*30)) / (1000*60*60*24));
+    let jam = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    let menit = Math.floor((diff % (1000*60*60)) / (1000*60));
+    let detik = Math.floor((diff % (1000*60)) / 1000);
+
+    document.getElementById(timerElId).innerHTML =
+      `${bulan} Bulan ${hari} Hari ${jam} Jam ${menit} Menit ${detik} Detik`;
+  },1000);
+}
+
+startCountdown("Juni 13, 2026 09:00:00", "akadDate", "countdownAkad");
+startCountdown("Juni 13, 2026 09:00:00", "resepsiDate", "countdownResepsi");
 
 // FLOWER
 setInterval(()=>{
@@ -584,12 +637,12 @@ setInterval(() => {
 
 // RUTE
 function copyRekening() {
-  navigator.clipboard.writeText('0312772645').then(() => {
+  navigator.clipboard.writeText('840012638720').then(() => {
     alert('No Rekening disalin!');
   }).catch(() => {
     // Fallback for older browsers
     let textArea = document.createElement('textarea');
-    textArea.value = '0312772645';
+    textArea.value = '1840012638720';
     document.body.appendChild(textArea);
     textArea.select();
     document.execCommand('copy');
