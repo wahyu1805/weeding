@@ -407,6 +407,33 @@ menjadi keberkahan bagi kami.
 </div>
 
 <script>
+// Ambil nama tamu dari URL parameter ?tamu=Nama%20Tamu
+function getUrlParam(param){
+  let urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+}
+
+function setNamaTamu(){
+  let nama = getUrlParam('tamu') || getUrlParam('to');
+  if(nama){
+    // Decode URL encoding (ganti + atau %20 jadi spasi)
+    let namaDecoded = decodeURIComponent(nama.replace(/\+/g, ' '));
+    // Update teks di hero
+    let elNamaTamu = document.getElementById('namaTamu');
+    if(elNamaTamu){
+      elNamaTamu.innerHTML = 'Kepada Yth:<br><strong style="font-size:20px;">' + namaDecoded + '</strong>';
+    }
+    // Auto-fill input nama di form RSVP
+    let elNamaInput = document.getElementById('nama');
+    if(elNamaInput){
+      elNamaInput.value = namaDecoded;
+    }
+  }
+}
+
+// Jalankan saat halaman dimuat
+setNamaTamu();
+
 function bukaUndangan(){
   document.getElementById("hero").style.display="none";
   document.getElementById("konten").style.display="block";
